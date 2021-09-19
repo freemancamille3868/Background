@@ -1,0 +1,93 @@
+#include <GDIPlus.au3>
+#include "GuiFlatButton.au3"
+
+Example()
+
+;buttons with Icon images
+Func Example()
+
+    ;get images for demonstration
+    _GDIPlus_Startup() ;initialize GDI+
+    Local $hIcon = _WinAPI_ShellExtractIcon(@SystemDir & '\shell32.dll', 258, 24, 24)   ;extract the 'Save' icon
+    Local $hBitmap = _GDIPlus_BitmapCreateFromHICON($hIcon)                             ;Create Bitmap from Icon (for demonstration)
+    Local $hHBitmap = _GDIPlus_BitmapCreateHBITMAPFromBitmap($hBitmap)                  ;Create HBitmap from Bitmap
+    _GDIPlus_BitmapDispose($hBitmap)                                                    ;dispose the bitmap
+    _GDIPlus_Shutdown() ;done with GDI+
+
+    Local $hGUI = GUICreate("GuiFlatButton Ex5", 255, 400)
+    GUISetBkColor(0xEEEEEE)
+
+    ;set default colors of future buttons
+    Local $aColorsEx = _
+    [0xE2E5E8, 0X000000, 0x888888, _    ; normal    : Background, Text, Border
+     0xE2E5E8, 0X000000, 0x333333, _    ; focus     : Background, Text, Border
+     0xE8E8E8, 0X000000, 0x666666, _    ; hover     : Background, Text, Border
+     0xDDDDDD, 0X000000, 0xAAAAAA]      ; selected  : Background, Text, Border
+    GuiFlatButton_SetDefaultColorsEx($aColorsEx)
+
+    ;normal button with icon
+    $label1 = GUICtrlCreateLabel( "$BS_TOOLBUTTON -->", 5, 10)
+    GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
+    Local $mybutton1 = GuiFlatButton_Create("Save", 130, 5, 50, 48, $BS_TOOLBUTTON)
+    _WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($mybutton1), $BM_SETIMAGE, $IMAGE_ICON, $hIcon))
+
+    ;align top
+    Local $mybuttonT = GuiFlatButton_Create("Top", 5, 65, 120, 55, $BS_TOP)
+    _WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($mybuttonT), $BM_SETIMAGE, $IMAGE_ICON, $hIcon))
+
+    ;align top-left
+    Local $mybuttonTL = GuiFlatButton_Create("Top-Left", 5, 125, 120, 55, BITOR($BS_TOP, $BS_LEFT))
+    _WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($mybuttonTL), $BM_SETIMAGE, $IMAGE_ICON, $hIcon))
+
+    ;align top-right
+    Local $mybuttonTR = GuiFlatButton_Create("Top-Right", 5, 185, 120, 55, BITOR($BS_TOP, $BS_RIGHT))
+    _WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($mybuttonTR), $BM_SETIMAGE, $IMAGE_ICON, $hIcon))
+
+    ;align left
+    Local $mybuttonL = GuiFlatButton_Create("Left", 5, 245, 120, 55, $BS_LEFT)
+    _WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($mybuttonL), $BM_SETIMAGE, $IMAGE_ICON, $hIcon))
+
+    ;align bottom
+    Local $mybuttonB = GuiFlatButton_Create("Bottom", 130, 65, 120, 55, $BS_BOTTOM)
+    _WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($mybuttonB), $BM_SETIMAGE, $IMAGE_ICON, $hIcon))
+
+    ;align bottom-left
+    Local $mybuttonBL = GuiFlatButton_Create("Bottom-Left", 130, 125, 120, 55, BITOR($BS_BOTTOM, $BS_LEFT))
+    _WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($mybuttonBL), $BM_SETIMAGE, $IMAGE_ICON, $hIcon))
+
+    ;align bottom-right
+    Local $mybuttonBR = GuiFlatButton_Create("Bottom-Right", 130, 185, 120, 55, BITOR($BS_BOTTOM, $BS_RIGHT))
+    _WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($mybuttonBR), $BM_SETIMAGE, $IMAGE_ICON, $hIcon))
+
+    ;align right
+    Local $mybuttonR = GuiFlatButton_Create("Right", 130, 245, 120, 55, $BS_RIGHT)
+    _WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($mybuttonR), $BM_SETIMAGE, $IMAGE_ICON, $hIcon))
+    GuiFlatButton_SetState($mybuttonR, $GUI_DISABLE )
+
+    ;disabled
+    Local $mybuttonDisable = GuiFlatButton_Create("Disabled", 130, 310, 120, 55, $BS_TOOLBUTTON)
+    _WinAPI_DeleteObject(_SendMessage(GUICtrlGetHandle($mybuttonDisable), $BM_SETIMAGE, $IMAGE_BITMAP, $hHBitmap))
+    GuiFlatButton_SetState($mybuttonDisable, $GUI_DISABLE )
+
+
+    ;clean up!
+    _WinAPI_DestroyIcon( $hIcon )
+    _WinAPI_DeleteObject( $hHBitmap )
+
+    GUISetState(@SW_SHOW, $hGUI)
+
+    Local $iMsg
+    While 1
+        $iMsg = GUIGetMsg()
+
+        Switch $iMsg
+            Case $GUI_EVENT_CLOSE
+                ExitLoop
+
+        EndSwitch
+
+        Sleep(10)
+    WEnd
+
+    GUIDelete()
+EndFunc   ;==>Example
